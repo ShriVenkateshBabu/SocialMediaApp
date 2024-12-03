@@ -21,6 +21,19 @@ const App = () => {
   let[error,setError] = useState("")
   let[isloading,setIsloading] = useState(false)
   const API_URL = "http://localhost:3600/posts"
+  
+  useEffect(()=>{
+    const filtersearchres = posts.filter((post)=>(
+      (post.body).toLowerCase().includes(search.toLowerCase())) ||
+      (post.title.toLowerCase().includes(search.toLowerCase())) 
+    )
+    setSearchResults(filtersearchres.reverse()) //note:reverse() to show latest post on starting
+    console.log(filtersearchres)
+      
+  },[search,posts])
+  
+  
+  
   useEffect(()=>{
    async function fetchdata(){
         try
@@ -77,7 +90,11 @@ const App = () => {
      setSearch={setSearch}
      />
      <Home
-     posts={posts}
+    //  posts={posts.filter((post)=>(
+    //   (post.body).toLowerCase().includes(search.toLowerCase())) ||
+    //   (post.title.toLowerCase().includes(search.toLowerCase())) 
+    // )}
+    posts={searchResult}
      postBody={postBody}
      postTitle={postTitle}
      setPostBody={setPostBody}
