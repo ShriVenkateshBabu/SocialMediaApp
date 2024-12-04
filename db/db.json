@@ -1,16 +1,16 @@
 {
   "posts": [
     {
-      "id": 1,
+      "id": "1",
       "title": "1 post",
       "datetime": "12 may",
       "body": "here to code"
     },
     {
-      "id": 2,
-      "title": "2 post",
-      "datetime": "02 December 2024,3:56:27 PM",
-      "body": "i am react"
+      "id": "2",
+      "title": "today",
+      "datetime": "04 December 2024,6:39:59 PM",
+      "body": "Need to finish react"
     }
   ]
 }

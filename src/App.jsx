@@ -9,6 +9,7 @@ import About from './Components/About'
 import Missing from './Components/Missing'
 import { format } from 'date-fns'
 import apirequest from './apirequest'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 
 const App = () => {
   let [posts,setPosts] =useState([
@@ -21,6 +22,7 @@ const App = () => {
   let[error,setError] = useState("")
   let[isloading,setIsloading] = useState(false)
   const API_URL = "http://localhost:3600/posts"
+  const navigate = useNavigate()
   
   useEffect(()=>{
     const filtersearchres = posts.filter((post)=>(
@@ -59,7 +61,7 @@ const App = () => {
   },[])
   async function handlesubmit(e) {
     e.preventDefault();
-    const newId = posts.length ? Number(posts[posts.length - 1].id) + 1 : 1;
+    const newId = posts.length ? (posts[posts.length - 1].id) + 1 : 1;
     const datetime = format(new Date(), "dd MMMM yyyy,pp");
     const newPost = { id: newId, title: postTitle, datetime, body: postBody };
     const updateOptions = {
@@ -81,6 +83,26 @@ const App = () => {
     } catch (err) {
       setError(err.message);
     }
+    navigate("/")
+  }
+  const handledelete = async (id)=>{
+      const post_list = posts.filter((post)=>(post.id!==id))
+      console.log(id)
+      const deleteoption = {
+        method :"DELETE",
+      }
+      try{
+        const response = await apirequest(`${API_URL}/${id}`,deleteoption)
+        if(!response.ok){
+          throw Error("DELETE METHOD PROBLEM")
+        }
+      }
+      catch(err){
+         setError(err.message)
+      }
+      
+     setPosts(post_list)
+     navigate("/")
   }
   return (
     <div className='App'>     
@@ -89,21 +111,31 @@ const App = () => {
      search={search}
      setSearch={setSearch}
      />
-     <Home
+     {isloading && console.log("loading")}
+     <Routes>
+     <Route path='/' element={<Home
     //  posts={posts.filter((post)=>(
     //   (post.body).toLowerCase().includes(search.toLowerCase())) ||
     //   (post.title.toLowerCase().includes(search.toLowerCase())) 
     // )}
-    posts={searchResult}
+    posts={searchResult}/>}/>
+     
+    <Route path ="posts">   
+    <Route  index element ={<NewPost
      postBody={postBody}
      postTitle={postTitle}
      setPostBody={setPostBody}
      setPostTitle={setPostTitle}
      handlesubmit={handlesubmit}
-     />
-     <Postpage/>
-     <About/>
-     <Missing/>
+     />}/>
+    <Route path=":id" element={<Postpage
+    posts ={posts}
+    handledelete ={handledelete}
+    />}/>
+     </Route>     
+     <Route path ="about" element ={<About/>}/>
+     <Route path="*" element={<Missing/>}/>
+     </Routes>
      <Footer/>
     </div>
   )

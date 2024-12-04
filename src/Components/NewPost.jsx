@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 const NewPost = ({handlesubmit,postTitle,postBody,setPostTitle,setPostBody}) => {
+  
   return (
     <main className='NewPost'>
       <h2>New Post</h2>
@@ -9,6 +10,7 @@ const NewPost = ({handlesubmit,postTitle,postBody,setPostTitle,setPostBody}) => 
       <input
       type='text'
       required
+      autoFocus
       placeholder='enter the title'
       id='postTitle'
       value={postTitle}

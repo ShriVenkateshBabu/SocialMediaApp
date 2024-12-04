@@ -1,7 +1,7 @@
 import React from 'react'
 import Post from './Post'
 import NewPost from './NewPost'
-const Feed = ({posts,postBody,postTitle,setPostBody,setPostTitle,handlesubmit}) => {
+const Feed = ({posts}) => {
   return (
     <>
     {posts.map((posts)=>
@@ -9,15 +9,6 @@ const Feed = ({posts,postBody,postTitle,setPostBody,setPostTitle,handlesubmit}) 
     key = {posts.id} posts ={posts}
     />
     )}
-    <>
-    <NewPost
-     postBody={postBody}
-     postTitle={postTitle}
-     setPostBody={setPostBody}
-     setPostTitle={setPostTitle}
-     handlesubmit={handlesubmit}
-     />
-    </>
     </>
   )
 }
