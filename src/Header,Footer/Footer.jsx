@@ -1,8 +1,11 @@
 import React from 'react'
 
 const Footer = () => {
+  const date = new Date()
   return (
-    <footer>Footer</footer>
+    <footer>
+     SHRI &copy; {date.getFullYear()}
+    </footer>
   )
 }
 
