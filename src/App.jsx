@@ -11,10 +11,13 @@ import { format } from 'date-fns'
 // import apirequest from './apirequest'
 import api from "./api/posts"
 import { Route, Routes, useNavigate } from 'react-router-dom'
+import Editpost from './Components/Editpost'
 
 const App = () => {
   let [posts,setPosts] =useState([
   ]|| [])
+  let[editTitle,seteditTitle] = useState('')
+  let[editBody,setEditBody] =useState("")
   let [search,setSearch] = useState("")
   let[searchResult ,setSearchResults] = useState([])
   let[postTitle, setPostTitle] = useState("")
@@ -80,7 +83,7 @@ const App = () => {
     //   setError(err.message);
     // }
      try{
-      const resposne = await api.post('',newPost)
+      const response = await api.post('',newPost)
       const allpost = [...posts,newPost] // newpost or response.data
       setPosts(allpost);
       setPostTitle("");
@@ -121,6 +124,20 @@ const App = () => {
       //    setError(err.message)
       // }
   }
+  async function handle_edit  (id){
+    const datetime = format(new Date(), "dd MMMM yyyy,pp");
+    const updatedPost = { id, title: editTitle, datetime, body: editBody };
+    try{
+    let response = await api.put(id,updatedPost)
+    setPosts(posts.map((post)=>post.id===id ? {...response.data}:post))
+    seteditTitle("")
+    setEditBody("")
+    navigate('/')
+    }
+    catch(err){
+     setError(err.message)
+    }
+  }
   return (
     <div className='App'>     
      <Header title = {"Venky Media App"}/>
@@ -145,11 +162,20 @@ const App = () => {
      setPostTitle={setPostTitle}
      handlesubmit={handlesubmit}
      />}/>
+   
     <Route path=":id" element={<Postpage
     posts ={posts}
     handledelete ={handledelete}
     />}/>
-     </Route>     
+     </Route>  
+     <Route path='edit/:id' element ={<Editpost
+    posts ={posts}
+    setEditBody ={setEditBody}
+    seteditTitle ={seteditTitle}
+    editTitle ={editTitle}
+    editBody ={editBody}
+    handle_edit ={handle_edit}
+    />}/>   
      <Route path ="about" element ={<About/>}/>
      <Route path="*" element={<Missing/>}/>
      </Routes>
