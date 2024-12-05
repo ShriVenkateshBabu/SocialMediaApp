@@ -12,8 +12,11 @@ import { format } from 'date-fns'
 import api from "./api/posts"
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import Editpost from './Components/Editpost'
+import useWindowSize from './hooks/useWindowSize'
+import useAxiosFetch from './hooks/useAxiosFetch'
 
 const App = () => {
+   let {width} = useWindowSize()
   let [posts,setPosts] =useState([
   ]|| [])
   let[editTitle,seteditTitle] = useState('')
@@ -22,11 +25,16 @@ const App = () => {
   let[searchResult ,setSearchResults] = useState([])
   let[postTitle, setPostTitle] = useState("")
   let[postBody,setPostBody] = useState("")
-  let[error,setError] = useState("")
-  let[isloading,setIsloading] = useState(false)
   // const API_URL = "http://localhost:3600/posts"
   const navigate = useNavigate()
-  
+  const { data, error, isLoading } = useAxiosFetch("http://localhost:3600/posts");
+  console.log(data)
+  useEffect(() => {
+    if (data) {
+      setPosts(data);
+    }
+  }, [data]);
+
   useEffect(()=>{
     const filtersearchres = posts.filter((post)=>(
       (post.body).toLowerCase().includes(search.toLowerCase())) ||
@@ -35,32 +43,29 @@ const App = () => {
     setSearchResults(filtersearchres.reverse()) //note:reverse() to show latest post on starting
     console.log(filtersearchres)
       
-  },[search,posts])
-  
-  
-  
-  useEffect(()=>{
-   async function fetchdata(){
-        try
-        {
-         setIsloading(true)
-         const response = await api.get() 
-         setPosts(response.data);
-         setError("")
-        }
-        catch(err){
-          if(response){
-            console.log(err.response)
-          }
-          setError(err.message)
-        }finally{
-            setIsloading(false)
-        }
-      }
-      setTimeout(() => {
-       (async ()=> await fetchdata())()
-      },2000);
-  },[])
+  },[search,posts])  
+  // useEffect(()=>{
+  //  async function fetchdata(){
+  //       try
+  //       {
+  //        setIsloading(true)
+  //        const response = await api.get() 
+  //        setPosts(response.data);
+  //        setError("")
+  //       }
+  //       catch(err){
+  //         if(response){
+  //           console.log(err.response)
+  //         }
+  //         setError(err.message)
+  //       }finally{
+  //           setIsloading(false)
+  //       }
+  //     }
+  //     setTimeout(() => {
+  //      (async ()=> await fetchdata())()
+  //     },2000);
+  // },[])
   async function handlesubmit(e) {
     e.preventDefault();
     const newId = posts.length ? (posts[posts.length - 1].id) + 1 : 1;
@@ -140,19 +145,24 @@ const App = () => {
   }
   return (
     <div className='App'>     
-     <Header title = {"Venky Media App"}/>
+     <Header title = {"Venky Media App"}
+     width ={width}
+     />
      <Nav
      search={search}
      setSearch={setSearch}
      />
-     {isloading && console.log("loading")}
      <Routes>
      <Route path='/' element={<Home
     //  posts={posts.filter((post)=>(
     //   (post.body).toLowerCase().includes(search.toLowerCase())) ||
     //   (post.title.toLowerCase().includes(search.toLowerCase())) 
     // )}
-    posts={searchResult}/>}/>
+    posts={searchResult}
+    error ={error}
+    isLoading ={isLoading}
+    />
+    }/>
      
     <Route path ="posts">   
     <Route  index element ={<NewPost
