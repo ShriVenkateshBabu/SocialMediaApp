@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-
-const Editpost = ({posts,setEditBody,seteditTitle,editTitle,editBody ,handle_edit}) => {
+import DataContext from '../DataContext/DataContext'
+const Editpost = () => {
+    const {posts,setEditBody,seteditTitle,editTitle,editBody ,handle_edit}= useContext(DataContext)
     const {id} = useParams()
     const post = posts.find((post)=>post.id===id)
     // console.log(post)
@@ -9,13 +10,12 @@ const Editpost = ({posts,setEditBody,seteditTitle,editTitle,editBody ,handle_edi
         if(post){
             seteditTitle(post.title)
             setEditBody(post.body)
-           
         }
     },[])
     return (
         <main className='NewPost'>
         <h2>Edit Post</h2>
-        <form  className='newPostForm' onSubmit={(e)=>e.preventDefault()}>
+      <form  className='newPostForm' onSubmit={(e)=>e.preventDefault()}>
        {editTitle &&
        <>
        <label htmlFor='postTitle'>Title</label>
